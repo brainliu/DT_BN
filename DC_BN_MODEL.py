@@ -25,18 +25,94 @@
 ##依次循环，直到最后一个节点为止，那么各个节点的值均预测出来了
 ##最后得到的是图结构，
 ##########################2019-11-08核心代码思路
-# A）	互信息计算得到初始的图
+# A）	互信息计算得到初始的图，并且在选择的时候必须一个farther和一个son，得到一个完备的图
 # B）	根据初始的图，判断节点顺序order
 # C）	Bic评价值的函数计算
 # D）	动态规划算法，节点的构造下逐步迭代算法
 # E）	输出最终的结果。
+##计算互信息，利用置信度进行转化？
+##变量离散化处理
+#构造的图需要有子节点和父节点
 
+
+import pandas as pd
+#构造图的一个类
+class Graph:
+    def __init__(self,nodes=[],edges=[],probs={},bic=None):
+        """
+        :param nodes:排好序以后的节点
+        :param edges: 节点里面的边的连接
+        :param probs: 各种节点组合下的概率分布,所有组合下的分布
+        """
+        self.nodes=nodes
+        self.edges=edges
+        self.probs=probs
+        self.bic=bic
+    def add_node(self,node):
+        self.nodes.append(node)
+    def add_edges(self,edge):
+        self.edges.append(edge)
+    def add_prop(self,prob_list):
+        self.probs[prob_list[0]]=prob_list[1]
+    #节点的顺序很重要，是决定最后预测结构的重要因素
+    def update_nodes(self,ordered_node):
+        self.nodes=ordered_node
+    def delete_edge(self,edge):
+        self.edges.remove(edge)
+    def update_bic(self,bic_value):
+        self.bic=bic_value
+    #找到每个节点的farther
+    def find_farther(self,node):
+        pass
+    #找到每个节点的son
+    def find_son(self,node):
+        pass
+
+"""
+x={}
+x[1]=2
+print(x[1])
+data_g=Graph()
+data_g.add_node("a")
+data_g.add_prop(["abc",{'name':'jinxin','age':18,'male':'男'}])
+print(data_g.probs)
+"""
+
+#计算各种连接情况下的cpt条件概率表,用一个数组表示
+def CPT_all():
+    pass
+
+#评价网络模型的bic值,以bic值不在增加为结束条件
+def bic_information():
+    pass
+#数据离散化处理
+def data_discriter():
+    pass
+
+#计算互信息
 def mutual_information():
     pass
 
+#利用互信息得到第一次的网络连接结构
+def first_connect_by_MI():
+    pass
 
 
-###4 基于概率的预测模型 置信区间
+#动态规划寻找最优bic值，并得到最优的网络结构********************核心代码
+def DAG_dbn():
+    pass
+
+
+#利用训练好的网络结构进行预测
+def dbn_predict():
+    pass
+
+
+#可视化当前结构的网络图
+def plot_graph():
+    pass
+
+
 
 
 
