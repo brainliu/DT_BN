@@ -333,3 +333,4 @@ dot_data = dotgraph(decisionTree)
 graph = pydotplus.graph_from_dot_data(dot_data)
 #graph.write_pdf("iris.pdf")
 graph.write_png("prune.png")
+

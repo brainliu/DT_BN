@@ -31,7 +31,11 @@
 # D）	动态规划算法，节点的构造下逐步迭代算法
 # E）	输出最终的结果。
 
+
 def mutual_information():
+    pass
+#计算条件概率
+def cal_condition_property():
     pass
 
 
