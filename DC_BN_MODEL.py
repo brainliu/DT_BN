@@ -34,16 +34,20 @@
 ##变量离散化处理
 #构造的图需要有子节点和父节点
 
+###最大似然估计变量的参数sitar
+
 
 import pandas as pd
+import matplotlib.pyplot as plt
 #构造图的一个类
 class Graph:
-    def __init__(self,nodes=[],edges=[],probs={},bic=None):
+    def __init__(self,data=None,nodes=[],edges=[],probs={},bic=None):
         """
         :param nodes:排好序以后的节点
         :param edges: 节点里面的边的连接
         :param probs: 各种节点组合下的概率分布,所有组合下的分布
         """
+        self.data=data
         self.nodes=nodes
         self.edges=edges
         self.probs=probs
@@ -113,7 +117,67 @@ def plot_graph():
     pass
 
 
+#数据离散化并画图展示出来，返回离散化的每个区间大小，针对每一个变量而言进行划分
+def classified_plot(data,k):
+    plt.rcParams['font.sans-serif'] = ['SimHei']
+    plt.rcParams['axes.unicode_minus'] = False
+    d = pd.cut(data_temp, k, labels=range(k))
+    plt.figure(figsize=(7,5))
+    discrete_list=[]
+    for j in range(0, k):
+        temp=[]
+        plt.plot(data[d==j], [i for i in d[d==j]], 'o')
+        temp.append(min(data[d==j]))
+        temp.append(max(data[d==j]))
+        discrete_list.append(temp)
+    plt.show()
+    return d,discrete_list
 
 
 
 
+data=pd.read_csv("fishiris.csv")
+node_list_all=data.columns.values.tolist()
+# print(node_list_all)
+#['SepalLength', 'SepalWidth', 'PetalLength', 'PetalWidth', 'Name']
+
+
+##测试数据离散化并输出结果
+# data_temp=data["SepalWidth"].copy()
+# k=4
+# cut_temp,cut_list=classified_plot(data_temp,k)
+new_data=pd.DataFrame()
+# new_data["SepalLength"]=cut_temp
+# print(new_data,cut_list)
+##得到新的数据new_data
+for name in node_list_all[:-1]:
+    data_temp=data[name].copy()
+    k=5
+    cut_temp, cut_list = classified_plot(data_temp, k)
+    new_data[name]=cut_temp
+    print(cut_list)
+print(new_data)
+
+##根据新的data计算CPT_all 所有的组合的全概率表，返回的样式为字典
+##{"组合名称":dataframe}
+def cal_all_props(node_list,dataframe):
+    pass
+node_list =["SepalLength","SepalWidth"]
+##构造字典 名称为表达式P(a,b) 或者P（a|b）
+name="P"+"("+node_list[0]+","+node_list[1]+")"
+print(name)
+cpt_result={}
+cpt_result["prop"]=[]
+#要根据节点的分类，得到多种组合效果
+
+"""
+for name in node_list:
+    cpt_result[name]=[]
+for name in node_list:
+    for i in new_data[name]:
+        for j in
+        cpt_result[name].append(i)
+
+"""
+##计算条件概率表，输入为{node:value,node:value},node,返回样式为字典
+##{"条件概率名称":dataframe}
