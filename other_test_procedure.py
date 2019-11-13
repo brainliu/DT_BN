@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #created by brian
-# create time :2019/11/4-23:38 
+# create time :2019/11/4-23:38
 #location: sichuan chengdu
 ############################1 用决策树划分状态和数据集，并计算出相应的概率
 ###已经完成 cart_decisiontree 程序中
@@ -40,7 +40,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import itertools
-from math import log
 #构造图的一个类
 class Graph:
     def __init__(self,data=None,nodes=[],edges=[],probs={},bic=None):
@@ -88,12 +87,16 @@ print(data_g.probs)
 def CPT_all():
     pass
 
-
-#数据离散化处理 ok
+#评价网络模型的bic值,以bic值不在增加为结束条件
+def bic_information():
+    pass
+#数据离散化处理
 def data_discriter():
     pass
 
-
+#计算互信息
+def mutual_information():
+    pass
 
 #利用互信息得到第一次的网络连接结构
 def first_connect_by_MI():
@@ -158,55 +161,112 @@ for name in node_list_all[:-1]:
 ##{"组合名称":dataframe}
 def cal_all_props(node_list,dataframe):
     pass
-
+node_list =["SepalLength","SepalWidth"]
 ##构造字典 名称为表达式P(a,b) 或者P（a|b）
 # name="P"+"("+node_list[0]+","+node_list[1]+")"
 # print(name)
 
+cpt_result={}
+cpt_result["prop"]=[]
 #要根据节点的分类，得到多种组合效果
+
+"""
+for name in node_list:
+    cpt_result[name]=[]
+for name in node_list:
+    for i in new_data[name]:
+        for j in
+        cpt_result[name].append(i)
+"""
 
 ##计算条件概率表，输入为{node:value,node:value},node,返回样式为字典
 ##{"条件概率名称":dataframe}
 
+
+#####计算互信息##
 #统计每个节点的概率分布p(x)以及p（x,y） 输出是一个字典 p（a）:dataframe[a],[p] # p(a,b),dataframe[a],[b],[p]
+
 ##计算全概率表和单个变量的概率表用字典表示
-def cal_total_and_two_prob_dict(node_list,all_data,result_dict={}):#可以传,也可以不传
+
+data_temp=new_data
+prob_node_list=['SepalLength', 'SepalWidth', 'PetalLength', 'PetalWidth']
+##得到初始的分组表用来统计概率
+count_data=dict(new_data.groupby(prob_node_list).size())#转化为字典方便操作
+#用于迭代构造输出的compare组合
+input_node=(set(new_data[name]) for name in prob_node_list)
+#初始化字典用来存储每一种条件概率的值
+
+prob_dataframe={}
+prob_name="P"+"("
+for name in prob_node_list:
+    #构造字典名称P(SepalLength,SepalWidth,PetalLength,PetalWidth)
+    if name!=prob_node_list[-1]:
+        prob_name+=name+","
+    else:
+        prob_name+=name+")"
+N=len(new_data)
+"""
+###构造成dataframe格式
+prob_name="P"+"("
+#初始化字典用来存储每一种条件概率的值
+prob_dataframe={}
+prob_dataframe["prob"]=[]
+for name in prob_node_list:
+    prob_dataframe[name]=[]
+    #构造字典名称P(SepalLength,SepalWidth,PetalLength,PetalWidth)
+    if name!=prob_node_list[-1]:
+        prob_name+=name+","
+    else:
+        prob_name+=name+")"
+N=len(new_data)
+for prob_compare in itertools.product(*input_node):
+    #记录每一行并加入概率表中，这里记录的是全概率
+    for i in range(len(prob_compare)):
+        prob_dataframe[prob_node_list[i]].append(prob_compare[i])
+    #索引求得prob的值
+    try:
+        prob_value=count_data[prob_compare]/N
+    except:
+        prob_value=0.0
+    prob_dataframe["prob"].append(prob_value)
+    print(prob_compare,prob_value)
+print(prob_dataframe)
+"""
+result_prob_name_dict={}
+for prob_compare in itertools.product(*input_node):
+    try:
+        prob_value=count_data[prob_compare]/N
+    except:
+        prob_value=0.0
+    result_prob_name_dict[prob_compare]=prob_value
+prob_dataframe[prob_name]=result_prob_name_dict
+print(prob_dataframe)
+
+def cal_total_and_two_prob_dict(node_list,all_data,result_dict):
     #先计算两个变量的全概率
     N=len(all_data)
     for node_compare in itertools.combinations(node_list,2):
         # node_compare=list(node_compare) #全概率没有顺序，无关
         prob_value_dict={}
         #构造字典名称P(SepalLength,SepalWidth,PetalLength,PetalWidth)
-        prob_name_dict="P("+node_compare[0]+","+node_compare[1]+")"
+        prob_name_dict="P("+node_compare[0]+node_compare[1]+")"
         input_node=(set(all_data[name]) for name in node_compare) #tuple 输入的数据集合
         count_data_temp = dict(new_data.groupby(list(node_compare)).size())  # 转化为字典方便操作
         for prob_compare in itertools.product(*input_node):#对每一种组合进行循环
             try:
-                prob_value = count_data_temp[prob_compare] / N
+                prob_value = count_data[prob_compare] / N
             except:
                 prob_value = 0.0  #将没有出现的组合填充为0.0
-            prob_value_dict[prob_compare] = prob_value
-        result_dict[prob_name_dict] = prob_value_dict
-    #再计算单个变量的概率
-    for node_one in node_list:
-        prob_value_dict = {}
-        prob_name_dict ="P("+node_one+")"
-        input_node = set(all_data[node_one])  # tuple 输入的数据集合
-        count_data_temp=dict(new_data.groupby(node_one).size())  # 转化为字典方便操作
-        for prob_one in input_node:
-            try:
-                prob_value=count_data_temp[prob_one]/N
-            except:
-                prob_value=0.0
-            prob_value_dict[prob_one] = prob_value
-        result_dict[prob_name_dict] = prob_value_dict
+            prob_name_dict[prob_compare] = prob_value
+        result_dict[prob_name_dict] = prob_name_dict
     print(result_dict)
     return result_dict
 
-
 node_list=['SepalLength', 'SepalWidth', 'PetalLength', 'PetalWidth']
 all_data=new_data
-result_prob_dict=cal_total_and_two_prob_dict(node_list,all_data)
+result_test={}
+
+result_dict=cal_total_and_two_prob_dict(node_list,all_data,result_test)
 
 #####计算互信息##
 #计算互信息,仅仅限于两个变量之间的互信息
@@ -272,5 +332,3 @@ def bic_information(current_node,farther_node_list,all_data):
 x=bic_information("SepalLength",['SepalWidth', 'PetalLength', 'PetalWidth'],new_data)
 print(x)
 ##计算一个节点的值
-
-
