@@ -74,6 +74,22 @@ class Graph:
     def find_son(self,node):
         pass
 
+class Node(object):
+    def __init__(self,farther,son,order):
+        self.farther = farther
+        self.son = son
+        self.order = order
+
+
+class G(object):
+    def __init__(self,Node):
+        self.Node=Node
+
+node1=Node("1,",2,3)
+
+g=G(node1)
+print(g.Node.farther)
+
 """
 x={}
 x[1]=2
