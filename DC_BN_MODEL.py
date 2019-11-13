@@ -39,6 +39,7 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import itertools
 #构造图的一个类
 class Graph:
     def __init__(self,data=None,nodes=[],edges=[],probs={},bic=None):
@@ -134,8 +135,6 @@ def classified_plot(data,k):
     return d,discrete_list
 
 
-
-
 data=pd.read_csv("fishiris.csv")
 node_list_all=data.columns.values.tolist()
 # print(node_list_all)
@@ -156,7 +155,7 @@ for name in node_list_all[:-1]:
     cut_temp, cut_list = classified_plot(data_temp, k)
     new_data[name]=cut_temp
     print(cut_list)
-print(new_data)
+# print(new_data)
 
 ##根据新的data计算CPT_all 所有的组合的全概率表，返回的样式为字典
 ##{"组合名称":dataframe}
@@ -164,8 +163,9 @@ def cal_all_props(node_list,dataframe):
     pass
 node_list =["SepalLength","SepalWidth"]
 ##构造字典 名称为表达式P(a,b) 或者P（a|b）
-name="P"+"("+node_list[0]+","+node_list[1]+")"
-print(name)
+# name="P"+"("+node_list[0]+","+node_list[1]+")"
+# print(name)
+
 cpt_result={}
 cpt_result["prop"]=[]
 #要根据节点的分类，得到多种组合效果
@@ -177,7 +177,71 @@ for name in node_list:
     for i in new_data[name]:
         for j in
         cpt_result[name].append(i)
-
 """
+
 ##计算条件概率表，输入为{node:value,node:value},node,返回样式为字典
 ##{"条件概率名称":dataframe}
+
+
+#####计算互信息##
+#统计每个节点的概率分布p(x)以及p（x,y） 输出是一个字典 p（a）:dataframe[a],[p] # p(a,b),dataframe[a],[b],[p]
+
+##计算全概率表和单个变量的概率表用字典表示
+
+data_temp=new_data
+prob_node_list=['SepalLength', 'SepalWidth', 'PetalLength', 'PetalWidth']
+##得到初始的分组表用来统计概率
+count_data=dict(new_data.groupby(prob_node_list).size())#转化为字典方便操作
+#用于迭代构造输出的compare组合
+input_node=(set(new_data[name]) for name in prob_node_list)
+#初始化字典用来存储每一种条件概率的值
+
+prob_dataframe={}
+prob_name="P"+"("
+for name in prob_node_list:
+    #构造字典名称P(SepalLength,SepalWidth,PetalLength,PetalWidth)
+    if name!=prob_node_list[-1]:
+        prob_name+=name+","
+    else:
+        prob_name+=name+")"
+N=len(new_data)
+"""
+###构造成dataframe格式
+prob_name="P"+"("
+#初始化字典用来存储每一种条件概率的值
+prob_dataframe={}
+prob_dataframe["prob"]=[]
+for name in prob_node_list:
+    prob_dataframe[name]=[]
+    #构造字典名称P(SepalLength,SepalWidth,PetalLength,PetalWidth)
+    if name!=prob_node_list[-1]:
+        prob_name+=name+","
+    else:
+        prob_name+=name+")"
+N=len(new_data)
+for prob_compare in itertools.product(*input_node):
+    #记录每一行并加入概率表中，这里记录的是全概率
+    for i in range(len(prob_compare)):
+        prob_dataframe[prob_node_list[i]].append(prob_compare[i])
+    #索引求得prob的值
+    try:
+        prob_value=count_data[prob_compare]/N
+    except:
+        prob_value=0.0
+    prob_dataframe["prob"].append(prob_value)
+    print(prob_compare,prob_value)
+print(prob_dataframe)
+"""
+result_prob_name_dict={}
+for prob_compare in itertools.product(*input_node):
+    try:
+        prob_value=count_data[prob_compare]/N
+    except:
+        prob_value=0.0
+    result_prob_name_dict[prob_compare]=prob_value
+prob_dataframe[prob_name]=result_prob_name_dict
+print(prob_dataframe)
+
+def cal_total_and_two_prob_dict(node_list,all_data,result_dict):
+
+    pass
