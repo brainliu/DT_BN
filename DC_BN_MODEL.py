@@ -43,7 +43,7 @@ import itertools
 from math import log
 #构造图的一个类
 class Graph:
-    def __init__(self,data=None,nodes=[],edges=[],probs={},bic=None):
+    def __init__(self,data=None,nodes=None,edges=[],probs={},bic=None):
         """
         :param nodes:排好序以后的节点
         :param edges: 节点里面的边的连接
@@ -75,7 +75,8 @@ class Graph:
         pass
 
 class Node(object):
-    def __init__(self,farther,son,order):
+    def __init__(self,name,farther,son,order):
+        self.name = name
         self.farther = farther
         self.son = son
         self.order = order
