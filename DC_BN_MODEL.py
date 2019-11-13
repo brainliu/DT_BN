@@ -75,18 +75,20 @@ class Graph:
         pass
 
 class Node(object):
-    def __init__(self,farther,son,order):
-        self.farther = farther
-        self.son = son
-        self.order = order
+    def __init__(self,farther=None,son=None,order=None,farther_list=list(),son_list=list()):
+        self.farther = farther #如果初始节点则 无
+        self.son = son  #最后一个节点 无
+        self.order = order #用来比较的顺序，初始会给定每个order的数字
+        self.farther_list =farther_list #可能的父节点的集合
+        self.son_list =son_list #可能的子节点集合
+
+
 
 
 class G(object):
     def __init__(self,Node):
         self.Node=Node
-
 node1=Node("1,",2,3)
-
 g=G(node1)
 print(g.Node.farther)
 
@@ -216,7 +218,7 @@ def cal_total_and_two_prob_dict(node_list,all_data,result_dict={}):#可以传,�
                 prob_value=0.0
             prob_value_dict[prob_one] = prob_value
         result_dict[prob_name_dict] = prob_value_dict
-    print(result_dict)
+    # print(result_dict)
     return result_dict
 
 
@@ -224,8 +226,7 @@ node_list=['SepalLength', 'SepalWidth', 'PetalLength', 'PetalWidth']
 all_data=new_data
 result_prob_dict=cal_total_and_two_prob_dict(node_list,all_data)
 
-#####计算互信息##
-#计算互信息,仅仅限于两个变量之间的互信息
+#####计算互信息计算互信息,仅仅限于两个变量之间的互信息
 def mutual_information(node_list,all_data,all_prob_dict,result_mutual={}):
     for node_compare in itertools.combinations(node_list, 2):
         MI_name_dict = "MI(" + node_compare[0] + "," + node_compare[1] + ")"
@@ -257,6 +258,7 @@ mu_value_dict=mutual_information(node_list,all_data,result_prob_dict)
 ##或者是不基于当前数据下，而是将没出现的情况也算进去？
 
 
+#计算一个节点的bic值
 def bic_information(current_node,farther_node_list,all_data):
     """
     :param current_node:第i个节点
@@ -283,10 +285,12 @@ def bic_information(current_node,farther_node_list,all_data):
         L1+=mijk*log(mijk/mij)
     return L1-L2
 
-
-
 x=bic_information("SepalLength",['SepalWidth', 'PetalLength', 'PetalWidth'],new_data)
 print(x)
-##计算一个节点的值
+##再逐步循环节点，得到整个网络的bic值
+#因此需要设定一个node类，包含每个节点的farther，和son，以及ordered_node
+#graph 类中决定node的顺序有一个order，不管怎样，按照顺序来进行寻找
+#还有一个搜寻范围 graph，每一个node的范围？怎么去更新
+
 
 
