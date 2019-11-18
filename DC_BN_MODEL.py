@@ -43,7 +43,7 @@ import itertools
 from math import log
 #构造图的一个类
 class Graph:
-    def __init__(self,data=None,nodes=None,edges=[],probs={},bic=None):
+    def __init__(self,data=None,nodes=None,edges=None,probs_all=None,bic=None):
         """
         :param nodes:排好序以后的节点
         :param edges: 节点里面的边的连接
@@ -52,14 +52,12 @@ class Graph:
         self.data=data
         self.nodes=nodes
         self.edges=edges
-        self.probs=probs
+        self.probs_all=probs_all
         self.bic=bic
     def add_node(self,node):
         self.nodes.append(node)
     def add_edges(self,edge):
         self.edges.append(edge)
-    def add_prop(self,prob_list):
-        self.probs[prob_list[0]]=prob_list[1]
     #节点的顺序很重要，是决定最后预测结构的重要因素
     def update_nodes(self,ordered_node):
         self.nodes=ordered_node
@@ -74,22 +72,47 @@ class Graph:
     def find_son(self,node):
         pass
 
-class Node(object):
-    def __init__(self,name,farther,son,order):
+class X_Node(object):
+    def __init__(self,name,farther,son,order,farther_node_list,son_node_list):
         self.name = name
         self.farther = farther
         self.son = son
         self.order = order
+        self.farther_node_list =farther_node_list
+        self.son_node_list =son_node_list
+    def update_farthernode_list(self,farther_node_list):
+        self.farther_node_list =farther_node_list
+    def update_son_node_list(self,son_node_list):
+        self.son_node_list =son_node_list
+    def update_order(self,order):
+        self.order = order
+    def update_farther(self,farther):
+        self.farther = farther
+    def update_son(self,son):
+        self.son = son
+
+##第一步输入初始的节点顺序
+#需要输入的数据为：节点、父节点的order为0，子节点的order初始为-1，
+#最开始是没有farther和son的
+#需要根据顺序去制定farther_node_list和son_node_list
+
+##第二步为每一个节点寻找farther和son
+##从farther_node_list 和 son_node_list 里面去选
+
+##第三步更新节点顺序，最好用字典来表示{1:[],2:[],3:[],4:[]} 每一个list也包含了内在的顺序
+##更新节点的父节点和子节点
+
+##按照阶段来进行选择连接方式，此处需要一个循环，并计算最大的bic值
+###得到新的连接结果，并输出graph
+
+X1=X_Node(name="x1",farther=None,son=None,order=1,farther_node_list=None,son_node_list=None)
 
 
-class G(object):
-    def __init__(self,Node):
-        self.Node=Node
 
-node1=Node("1,",2,3)
 
-g=G(node1)
-print(g.Node.farther)
+
+
+
 
 """
 x={}
