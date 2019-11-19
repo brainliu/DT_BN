@@ -117,7 +117,7 @@ class X_Node(object):
 X1=X_Node(name="x1",farther=None,son=None,order=1,farther_node_list=None,son_node_list=None)
 
 
-
+#输入节点
 
 
 
