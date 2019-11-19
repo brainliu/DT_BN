@@ -131,15 +131,6 @@ X1=X_Node(name="x1",farther=None,son=None,order=1,farther_node_list=None,son_nod
 
 
 
-
-
-
-
-
-
-
-
-
 """
 x={}
 x[1]=2
