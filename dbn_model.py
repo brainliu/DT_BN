@@ -234,4 +234,5 @@ new_data.to_csv("finally.csv") ##增加了 V1和V2以后的节点
 
 ##同样用字典存储，字典的名称为p(y1|x1,x2,x3) 其值也是字典{y=1|x1=，x2=,x3=,:}这样一个字典样式进行
 
-
+def cal_conditional_properties():
+    pass
