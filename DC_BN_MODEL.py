@@ -117,7 +117,16 @@ class X_Node(object):
 X1=X_Node(name="x1",farther=None,son=None,order=1,farther_node_list=None,son_node_list=None)
 
 
-#输入节点
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -203,7 +212,7 @@ new_data=pd.DataFrame()
 # new_data["SepalLength"]=cut_temp
 # print(new_data,cut_list)
 ##得到新的数据new_data
-for name in node_list_all[:-1]:
+for name in node_list_all[1:-1]:
     data_temp=data[name].copy()
     k=5
     cut_temp, cut_list = classified_plot(data_temp, k)
