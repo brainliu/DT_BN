@@ -110,6 +110,30 @@ X1=X_Node(name="x1",farther=None,son=None,order=1,farther_node_list=None,son_nod
 
 
 
+#######################2019-11-18################
+###贝叶斯网络结构训练核心步骤
+###1 构建节点，输入初始的节点信息
+###2  根据节点得到初始的graph，保存初始的节点顺序信息 得到graph1，以及farther_list 和 son_list
+###3  根据顺序信息和互相关信息来update节点信息，并加入了edge信息到graph中去得到graph2
+###4  根据graph2 的edge信息来更新graph2 的节点的order，以及farher_list ，
+###5  生成新的graph3 根据graph2的节点顺序信息和 MDI值 来更缩小farther_list和son_list
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
