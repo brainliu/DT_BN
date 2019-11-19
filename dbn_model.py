@@ -137,7 +137,7 @@ for mutual_A in mutual_nodelist_A:
     result_list.append(temp)
 sort_d = sorted(result_list,key=itemgetter(1),reverse=True)
 print("#"*20)
-print("计算出来的与目标变量之间互信息值为：")
+print(u"计算出来的与目标变量之间互信息值为：")
 for item in sort_d:
     print("%15s -->NNN  :    %.8f"%(item[0],item[1]))
 print("#"*20)
@@ -148,6 +148,8 @@ print("\n")
 yuzhi=0.06 #表示需要进行合并的节点
 ##本测试数据中算出来的的各项相MI信息如下：
 
+
+##下表为输出数据以及分析过程
 #[['opening_hours', 0.15478329090721105], ['cn_z', 0.09912488795134498],
 # ['picture', 0.08704216312450302], ['cn_add', 0.0791674853845806],
 # ['hp', 0.05711082764131546], ['tk', 0.0563649514304303],
@@ -206,9 +208,9 @@ def add_new_virtual_result(data_temp,name):
         try:
             cut_temp, cut_list = classified_plot(data_temp, K_select, name)
             new_data[name] = cut_temp
-            print("%s is 被离散化成了 %d 部分!" % (name, K_select))
+            print(u"%s is 被离散化成了 %d 部分!" % (name, K_select))
             new_data[name] = cut_temp
-            print("%s分段离散的区间的点如下：" % name)
+            print(u"%s分段离散的区间的点如下：" % name)
             print(cut_list)
             break
         except:
