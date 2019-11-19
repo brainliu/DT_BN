@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 #created by brian
-# create time :2019/11/4-23:38 
+# create time :2019/11/4-23:38
 #location: sichuan chengdu
 ############################1 用决策树划分状态和数据集，并计算出相应的概率
 ###已经完成 cart_decisiontree 程序中
@@ -91,24 +91,6 @@ class X_Node(object):
     def update_son(self,son):
         self.son = son
 
-##第一步输入初始的节点顺序
-#需要输入的数据为：节点、父节点的order为0，子节点的order初始为-1，
-#最开始是没有farther和son的
-#需要根据顺序去制定farther_node_list和son_node_list
-
-##第二步为每一个节点寻找farther和son
-##从farther_node_list 和 son_node_list 里面去选
-
-##第三步更新节点顺序，最好用字典来表示{1:[],2:[],3:[],4:[]} 每一个list也包含了内在的顺序
-##更新节点的父节点和子节点
-
-##按照阶段来进行选择连接方式，此处需要一个循环，并计算最大的bic值
-###得到新的连接结果，并输出graph
-
-X1=X_Node(name="x1",farther=None,son=None,order=1,farther_node_list=None,son_node_list=None)
-
-
-
 
 #######################2019-11-18################
 ###贝叶斯网络结构训练核心步骤
@@ -117,6 +99,26 @@ X1=X_Node(name="x1",farther=None,son=None,order=1,farther_node_list=None,son_nod
 ###3  根据顺序信息和互相关信息来update节点信息，并加入了edge信息到graph中去得到graph2
 ###4  根据graph2 的edge信息来更新graph2 的节点的order，以及farher_list ，
 ###5  生成新的graph3 根据graph2的节点顺序信息和 MDI值 来更缩小farther_list和son_list
+
+##第一步输入初始的节点顺序
+#需要输入的数据为：节点、父节点的order为0，子节点的order初始为-1，
+#最开始是没有farther和son的
+#需要根据顺序去制定farther_node_list和son_node_list
+
+##第二步为每一_list 和 son_node_list 里面去选
+
+##第三步更新节点顺序，最好用字典来表示{1:[],2:[],3:[],4:[]} 每一个list也包含了内在的顺序
+##更新节点的父节点和子节点
+
+##按照阶段来进行选择连接方式，此处需要一个循环，并计算最大的bic值
+###得到新的连接结果，并输出graph个节点寻找farther和son
+##从farther_node
+
+X1=X_Node(name="x1",farther=None,son=None,order=1,farther_node_list=None,son_node_list=None)
+
+
+
+
 
 
 
