@@ -339,4 +339,61 @@ x=bic_information("SepalLength",['SepalWidth', 'PetalLength', 'PetalWidth'],new_
 print(x)
 ##计算一个节点的值
 
+#{p(y_node|x_list): {[0,1,2]:{1:p1,2:p2}, [0,1,3]:{1:p1,2:p2},[0,1,4]:{1:p1,2:p2} }}
+##如上所示的一个嵌套dict，外层为索引的节点变量，第二层字典名称为x_list具体的取值，第三层为y的取值以及相应的概率
+##预测的时候去这样的dict中去求
+def cal_conditional_properties(data,x_list,y_node,result_condition_dict_cpt):
+    groupby_list=x_list.copy()
+    groupby_list.append(y_node)
+    count_data_temp_condition = dict(data.groupby(list(x_list)).size())
+    count_data_temp_y=dict(data.groupby(list(groupby_list)).size())
+    #y的取值范围，通过数据来获取
+    y_list_set=set(data[y_node])
+    print(y_list_set)
+    first_dict_name="P("+y_node+"|"+str(x_list)+")"
+    # print(first_dict_name)
+    result_condition_dict_cpt[first_dict_name]={}
+    for condition_compare in count_data_temp_condition.keys(): #condition_compare=(0,1,2) 类似于tuple 作为条件
+        value_count_all=count_data_temp_condition[condition_compare]#求得各种条件下的组合情况
+        name=str(list(condition_compare))
+        prob_dict_temp={} #{1:0.2,2:0.3,3:0.4} 类似于这种的各种概率字典
+        for j in y_list_set:
+            count_one_temp_tuple = list(condition_compare)
+            count_one_temp_tuple.append(j)
+            try:
+                value_count_one=count_data_temp_y[tuple(count_one_temp_tuple)]
+            except:
+                value_count_one=0.0
+            value_prob_temp=value_count_one/value_count_all
+            prob_dict_temp[j]=value_prob_temp
+        result_condition_dict_cpt[first_dict_name][name]=prob_dict_temp
+    return result_condition_dict_cpt
 
+#计算贝叶斯网络中概率最大的值作为预测结果输出
+def predict_one(x_list1,y_node1,test_x,test_node_list,result_all_cpt_dict):
+    V1_list = []  # 用来保存计算出来的V1的值
+    condition_key="P("+y_node1+"|"+str(x_list1)+")"
+    for number in range(len(test_x)): #对每一行的数据进行循环获取求得指标值V1相关的变量
+        key_temp=[]
+        for keys in x_list1:
+            index=test_node_list.index(keys)
+            key_temp.append(test_x[number][index]) #获取条件变量组合的情况
+        value_prob_dict=result_all_cpt_dict[condition_key][str(key_temp)] #利用条件概率表求最大值
+        result_max = max(value_prob_dict, key=lambda x: value_prob_dict[x])
+        V1_list.append(result_max)
+    return V1_list
+
+def predict_final(x_list1,edge_list_first,y_node1,test_x,test_node_list,result_all_cpt_dict,v1_list,v2_list):
+    result_pred=[]
+    condition_key="P("+y_node1+"|"+str(x_list1)+")"
+    for number in range(len(test_x)):
+        key_temp=[]
+        for keys in edge_list_first:
+            index=test_node_list.index(keys)
+            key_temp.append(test_x[number][index])
+        key_temp.append(v1_list[number]) #加入生成的两个变量的节点
+        key_temp.append(v2_list[number]) #加入第二个变量的节点
+        value_prob_dict = result_all_cpt_dict[condition_key][str(key_temp)]  # 利用条件概率表求最大值
+        result_max = max(value_prob_dict, key=lambda x: value_prob_dict[x])
+        result_pred.append(result_max)
+    return result_pred
