@@ -10,3 +10,4 @@ for i in itertools.combinations(x,2):
     print(i)
 for y in itertools.product(*x):
     print(y[0],y[1],y[2])
+
