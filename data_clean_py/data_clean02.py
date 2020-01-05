@@ -6,6 +6,9 @@
 #当前清洗好的数据为data_04
 import pandas as pd
 import numpy as np
+import time
+# import os
+# os.environ["CUDA_VISIBLE_DEVICES"]="0"
 name_index_global=['641 靠梯桥', '644 清洁完成', '645开货仓', '655 配餐完成',
        '660 机务完成', '662登机开始', '668关货仓 ', '669 撤轮档', '361机务完成', '365加油完成 缺失较多',
        '368开客舱', '369上轮档', '370登机结束', '378 配餐开始 8个', '379清洁开始', '380撤梯桥',
@@ -95,6 +98,7 @@ def get_bayesin_model(A,B,all_model_cpb):
 #主要耗时不在模型的建立，而在于计算，因此建立循环计算模型来进行填充值
 #必须把值填充成功的目标，挨个用每个值进行循环
 def cleand_cycle(data_05,save_file="cleaned_final06.csv"):
+    # data_05=data_05[data_05['369上轮档']!=-1]
     data_06=data_05.copy()
     for target_name in name_index_global:
        name_compare_list=corr_dict_sorted[target_name]
@@ -114,9 +118,47 @@ def cleand_cycle(data_05,save_file="cleaned_final06.csv"):
            if index%500==0:
                print(data_06.loc[index,target_name],"current node->",target_name,name_index_global.index(target_name),"this node remain %d"%(len(data_06)-index))
     data_06.to_csv(save_file)
+def cleand_cycle2(data_05,all_model_cpb,corr_dict_sorted,save_file="cleaned_final06.csv"):
+    # data_05=data_05[data_05['369上轮档']!=-1]
+    data_06=data_05.copy()
+    for target_name in name_index_global:
+       start_time=time.time()
+       name_compare_list=corr_dict_sorted[target_name]
+       # print(name_compare_list)
+       data_temp=data_06[data_06[target_name]==-1] #筛选出来为空值的数据
+       for index in data_temp.index:
+           for name_compare in name_compare_list:
+               valule_compare=data_05.loc[index,name_compare]
+               if valule_compare!=-1:
+                   #获取待比较的模型
+                   model=get_bayesin_model(target_name,name_compare,all_model_cpb)
+                   try:
+                       target_value=model.map_query([target_name], evidence={name_compare: valule_compare},show_progress=False)
+                       data_06.loc[index,target_name] =  list(target_value.values())[0]
+                       break
+                   except:
+                       continue
+           if list(data_temp.index).index(index)%500==0:
+               print(data_06.loc[index,target_name],"current node->",target_name,name_index_global.index(target_name),"this node remain %d"%(len(data_temp)-list(data_temp.index).index(index)))
+       end_time=time.time()
+       print("本次迭代变量--> %s 耗时: %s "%(target_name,end_time-start_time))
+    data_06.to_csv(save_file)
+
+
 data_04=pd.read_csv("cleaned_final02.csv")
 data_05=data_04[name_index_global]
 all_model_cpb=get_all_cpb_infer_models(name_index_global,data_05) #获得是所有的变量之间的模型
 corr_dict_sorted=get_sorted_corr_dict(name_index_global)
-cleand_cycle(data_05,save_file="cleaned_final06.csv")
+cleand_cycle2(data_05,all_model_cpb,corr_dict_sorted,"cleaned_final06.csv")
+
+save_file_cycle="cleaned_final06.csv"
+for name_save in range(10):
+    print("正在进行的第？次循环迭代",name_save)
+    data_cycle1=pd.read_csv(save_file_cycle)
+    save_file_cycle="save_file_cycle_%d.csv"%name_save
+    data_cycle2 = data_cycle1[name_index_global]
+    all_model_cpb = get_all_cpb_infer_models(name_index_global, data_05)  # 获得是所有的变量之间的模型
+    corr_dict_sorted = get_sorted_corr_dict(name_index_global)
+    cleand_cycle2(data_cycle2, all_model_cpb,corr_dict_sorted,save_file_cycle)
+
 
